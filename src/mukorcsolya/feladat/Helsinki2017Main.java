@@ -29,6 +29,9 @@ public class Helsinki2017Main {
 		nev = sc.nextLine();
 
 		feladat.KeresesNevre(donto, rovidProgram, nev);
+		System.out.println("\n7. feladat:");
+		feladat.Osszesites(donto);
+		feladat.VegeredmenyLista(donto, rovidProgram);
 
 	}
 

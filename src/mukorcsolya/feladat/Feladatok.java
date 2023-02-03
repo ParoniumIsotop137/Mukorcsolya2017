@@ -1,6 +1,11 @@
 package mukorcsolya.feladat;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Feladatok {
 
@@ -52,5 +57,54 @@ public class Feladatok {
 			System.out.println("Ilyen nevű induló nem volt!");
 		}
 
+	}
+
+	public void Osszesites(List<Versenyzo> donto) {
+
+		Map<String, Integer> osszesites = new HashMap<String, Integer>();
+
+		for (Versenyzo versenyzo : donto) {
+			osszesites.put(versenyzo.getOrszagKod(), 0);
+		}
+
+		for (Versenyzo versenyzo : donto) {
+			for (Map.Entry<String, Integer> stati : osszesites.entrySet()) {
+				if (stati.getKey().equals(versenyzo.getOrszagKod())) {
+					stati.setValue((stati.getValue() + 1));
+				}
+			}
+
+		}
+		StringBuilder kiiras = new StringBuilder();
+
+		osszesites.entrySet().stream().filter(s -> s.getValue() > 1)
+				.forEach(s -> kiiras.append(s.getKey() + " : " + s.getValue() + " versenyző\n"));
+
+		System.out.println(kiiras.toString());
+
+	}
+
+	public void VegeredmenyLista(List<Versenyzo> donto, List<Versenyzo> rovidProgram) {
+
+		List<Versenyzo> eredmenyek = new ArrayList<Versenyzo>();
+
+		for (Versenyzo versenyzo : rovidProgram) {
+			for (Versenyzo versenyzoDonto : donto) {
+				if (versenyzo.getNev().equals(versenyzoDonto.getNev())) {
+					double osszPontszam = (((versenyzo.getTechikaiPontszam() + versenyzoDonto.getTechikaiPontszam())
+							+ (versenyzo.getKomponensPontszam() + versenyzoDonto.getKomponensPontszam())));
+
+					eredmenyek.add(new Versenyzo(versenyzo.getNev(), versenyzo.getOrszagKod(), osszPontszam, 0.0, 0.0));
+				}
+
+			}
+
+		}
+
+		List<Versenyzo> vegeredmeny = eredmenyek.stream()
+				.sorted(Comparator.comparingDouble(n -> ((Versenyzo) n).getTechikaiPontszam()).reversed())
+				.collect(Collectors.toList());
+
+		FajlKezeles.FajlbaIras(vegeredmeny, "F:\\Kurs\\Feladatok\\Mukorcsolya\\vegeredmeny.csv", ";");
 	}
 }
